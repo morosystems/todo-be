@@ -54,7 +54,7 @@ module.exports = (app) => {
      * @tags Tasks
      * @param {string} id.path.required - ID of task
      * @param {UpdateTask} request.body.required - text
-     * @return {array<Task>} 200 - Todo updated - application/json
+     * @return {array<Task>} 200 - Task updated - application/json
      * @return {string} 422 - Bad request
      */
     /**
@@ -73,7 +73,7 @@ module.exports = (app) => {
     /**
      * POST /tasks/{id}/complete
      * @summary Completes given task, then returns modified task
-     * @tags Todos
+     * @tags Tasks
      * @param {string} id.path.required - ID of task
      * @return {array<Task>} 200 - success response - application/json
      * @return {string} 422 - Bad request
