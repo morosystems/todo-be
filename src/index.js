@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const expressJSDocSwagger = require('express-jsdoc-swagger');
+
+const swaggerSpec = require('./swagger');
 
 const app = express();
 const port = 8080;
@@ -13,10 +16,12 @@ app.use(function(req, res, next) {
     next();
 });
 
+expressJSDocSwagger(app)(swaggerSpec)
+
 const routes = require('./routes');
 
 routes(app);
 
 app.listen(port);
 
-console.log(`todo list RESTful API server started on: ${port}`);
+console.log(`Todo app REST API server started on: ${port}`);

@@ -1,13 +1,13 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
-const uuidv1 = require('uuid/v1');
+const { nanoid } = require('nanoid')
 
 const adapter = new FileSync('data/db.json');
 const db = low(adapter);
 
 exports.getAll = (req, res) => {
     setTimeout(() => {
-        const posts = db.get('todos')
+        const posts = db.get('tasks')
             .sortBy('createdDate')
             .reverse()
             .value();
@@ -16,7 +16,7 @@ exports.getAll = (req, res) => {
 };
 
 exports.getCompleted = (req, res) => {
-    const posts = db.get('todos')
+    const posts = db.get('tasks')
         .filter((item) => item.completed)
         .sortBy('createdDate')
         .reverse()
@@ -28,9 +28,9 @@ exports.create = (req, res) => {
     if (!req.body.text) {
         res.status(422).send('\'text\' field must be present in json');
     } else {
-        const written = db.get('todos')
+        const written = db.get('tasks')
             .push({
-                id: uuidv1(),
+                id: nanoid(),
                 text: req.body.text,
                 completed: false,
                 createdDate: new Date().getTime(),
@@ -42,11 +42,11 @@ exports.create = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    const id = req.param('id');
+    const id = req.params['id'];
     if (!id) {
         res.status(422).send('\'id\' must be present in params');
     } else {
-        const deleted = db.get('todos')
+        const deleted = db.get('tasks')
             .remove({id})
             .write();
         if (deleted.length === 0) {
@@ -59,13 +59,13 @@ exports.delete = (req, res) => {
 
 exports.updateText = (req, res) => {
     const {text} = req.body;
-    const id = req.param('id');
+    const id = req.params['id'];
     if (!text) {
         res.status(422).send('\'text\' field must be present in json');
     } else if (!id) {
         res.status(422).send('\'id\' must be present in params');
     } else {
-        const written = db.get('todos')
+        const written = db.get('tasks')
             .find({id})
             .assign({text})
             .write();
@@ -74,11 +74,11 @@ exports.updateText = (req, res) => {
 };
 
 exports.complete = (req, res) => {
-    const id = req.param('id');
+    const id = req.params['id'];
     if (!id) {
         res.status(422).send('\'id\' must be present in params');
     } else {
-        const completed = db.get('todos')
+        const completed = db.get('tasks')
             .find({
                 id,
                 completed: false,
@@ -97,11 +97,11 @@ exports.complete = (req, res) => {
 };
 
 exports.incomplete = (req, res) => {
-    const id = req.param('id');
+    const id = req.params['id'];
     if (!id) {
         res.status(422).send('\'id\' must be present in params');
     } else {
-        const incompleted = db.get('todos')
+        const incompleted = db.get('tasks')
             .find({
                 id,
                 completed: true,
